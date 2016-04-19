@@ -225,6 +225,8 @@ $(document).ready(function() {
         } else if (setup[i][j] == 'E') {
           setup[i][j] = new CellConstructor('E');
         } else if (setup[i][j] == 'A') {
+          var randomizeObstacle = Math.random();
+          // var obstacle = randomizeObstacle < 0.75 ? 'W' : 'E';
           var randomizeItem = Math.random();
           var availableItems = Object.keys(items); // ['addBomb', 'addBlast']
           var itemName = availableItems[Math.floor((Math.random() * availableItems.length))];
