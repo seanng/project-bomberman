@@ -1,31 +1,26 @@
-var debug;
 var gridSize   = 40;
-var playerSize = 26;
 var winCondition = 1;
 var killCount = 0;
 
-var Binding = function () {
-  this["65"]  = {player: "p1", action: "left", active: false};
-  this["87"]  = {player: "p1", action: "up", active: false};
-  this["68"]  = {player: "p1", action: "right", active: false};
-  this["83"]  = {player: "p1", action: "down", active: false};
-  this["17"]  = {player: "p1", action: "bomb", active: false};
-  this["70"]  = {player: "p2", action: "left", active: false};
-  this["84"]  = {player: "p2", action: "up", active: false};
-  this["72"] = {player: "p2", action: "right", active: false};
-  this["71"] = {player: "p2", action: "down", active: false};
-  this["32"]  = {player: "p2", action: "bomb", active: false};
-  this["74"]  = {player: "p3", action: "left", active: false};
-  this["73"]  = {player: "p3", action: "up", active: false};
-  this["76"] = {player: "p3", action: "right", active: false};
-  this["75"] = {player: "p3", action: "down", active: false};
-  this["18"]  = {player: "p3", action: "bomb", active: false};
-  this["186"]  = {player: "p4", action: "left", active: false};
-  this["219"]  = {player: "p4", action: "up", active: false};
-  this["13"] = {player: "p4", action: "right", active: false};
-  this["222"] = {player: "p4", action: "down", active: false};
-  this["191"]  = {player: "p4", action: "bomb", active: false};
+var Setup = function() {
+  this.map = [
+    ['R','R','R','R','R','R','R','R','R','R','R','R','R','R','R'],
+    ['R','E','E','A','A','A','A','A','A','A','A','A','E','E','R'],
+    ['R','E','R','A','R','A','R','A','R','A','R','A','R','E','R'],
+    ['R','A','A','A','A','A','A','A','A','A','A','A','A','A','R'],
+    ['R','A','R','A','R','A','R','A','R','A','R','A','R','A','R'],
+    ['R','A','A','A','A','A','A','A','A','A','A','A','A','A','R'],
+    ['R','A','R','A','R','A','R','A','R','A','R','A','R','A','R'],
+    ['R','A','A','A','A','A','A','A','A','A','A','A','A','A','R'],
+    ['R','A','R','A','R','A','R','A','R','A','R','A','R','A','R'],
+    ['R','A','A','A','A','A','A','A','A','A','A','A','A','A','R'],
+    ['R','E','R','A','R','A','R','A','R','A','R','A','R','E','R'],
+    ['R','E','E','A','A','A','A','A','A','A','A','A','E','E','R'],
+    ['R','R','R','R','R','R','R','R','R','R','R','R','R','R','R']
+  ];
 };
+
+var setup; // referred to in the Bomb Constructor
 
 var PlayerConstructor = function(name, elem, row, column) {
   this.name = name,
@@ -42,7 +37,31 @@ var PlayerConstructor = function(name, elem, row, column) {
   this.availableBombs = 1,
   this.blastRadius = 1,
   this.alive = true
-}
+};
+
+var Binding = function () {
+  this["65"]  = {player: "p1", action: "left", active: false}; //A
+  this["87"]  = {player: "p1", action: "up", active: false}; //W
+  this["68"]  = {player: "p1", action: "right", active: false}; //D
+  this["83"]  = {player: "p1", action: "down", active: false}; //S
+  this["17"]  = {player: "p1", action: "bomb", active: false}; //Ctrl
+  this["70"]  = {player: "p2", action: "left", active: false}; //F
+  this["84"]  = {player: "p2", action: "up", active: false}; //T
+  this["72"] = {player: "p2", action: "right", active: false}; //H
+  this["71"] = {player: "p2", action: "down", active: false}; //G
+  this["32"]  = {player: "p2", action: "bomb", active: false};//Space
+  this["74"]  = {player: "p3", action: "left", active: false};//J
+  this["73"]  = {player: "p3", action: "up", active: false};//I
+  this["76"] = {player: "p3", action: "right", active: false};//L
+  this["75"] = {player: "p3", action: "down", active: false};//K
+  this["18"]  = {player: "p3", action: "bomb", active: false};//alt
+  this["186"]  = {player: "p4", action: "left", active: false};//;
+  this["219"]  = {player: "p4", action: "up", active: false};//[
+  this["13"] = {player: "p4", action: "right", active: false};//Return
+  this["222"] = {player: "p4", action: "down", active: false};//'
+  this["191"]  = {player: "p4", action: "bomb", active: false};//.
+};
+
 
 var CellConstructor = function(obstacle, item, row, column){
   this.obstacle = obstacle;
@@ -64,6 +83,8 @@ var items = {
     }
   }
 };
+
+// Bomb Constructor Function
 
 var BombConstructor = function(row, column, power, P, playerName) {
   this.blastRadius = power;
@@ -158,6 +179,7 @@ var BombConstructor = function(row, column, power, P, playerName) {
   }
 
   this.activateNow = function() {
+
     $('tr').eq(this.bombRow).find('td').eq(this.bombColumn).removeClass('bomb');
     setup[this.bombRow][this.bombColumn].obstacle = 'E';
     P[playerName].availableBombs++;
@@ -183,25 +205,7 @@ var BombConstructor = function(row, column, power, P, playerName) {
   this.activateBomb();
 };
 
-var Setup = function() {
-  this.map = [
-    ['R','R','R','R','R','R','R','R','R','R','R','R','R','R','R'],
-    ['R','E','E','A','A','A','A','A','A','A','A','A','E','E','R'],
-    ['R','E','R','A','R','A','R','A','R','A','R','A','R','E','R'],
-    ['R','A','A','A','A','A','A','A','A','A','A','A','A','A','R'],
-    ['R','A','R','A','R','A','R','A','R','A','R','A','R','A','R'],
-    ['R','A','A','A','A','A','A','A','A','A','A','A','A','A','R'],
-    ['R','A','R','A','R','A','R','A','R','A','R','A','R','A','R'],
-    ['R','A','A','A','A','A','A','A','A','A','A','A','A','A','R'],
-    ['R','A','R','A','R','A','R','A','R','A','R','A','R','A','R'],
-    ['R','A','A','A','A','A','A','A','A','A','A','A','A','A','R'],
-    ['R','E','R','A','R','A','R','A','R','A','R','A','R','E','R'],
-    ['R','E','E','A','A','A','A','A','A','A','A','A','E','E','R'],
-    ['R','R','R','R','R','R','R','R','R','R','R','R','R','R','R']
-  ];
-};
 
-var setup;
 
 // create a loop that scans
 
@@ -211,26 +215,24 @@ $(document).ready(function() {
   var gameLoopInterval;
   var gameOverScreen = false;
   var bindings = new Binding;
+  var playerSize = 26;
 
   var world = function(){
     for (var i = 0; i < setup.length; i++) {
       for (var j = 0; j < setup[i].length; j++) {
         if (setup[i][j] == 'R') {
-          setup[i][j] = new CellConstructor('R')
+          setup[i][j] = new CellConstructor('R');
         } else if (setup[i][j] == 'E') {
-          setup[i][j] = new CellConstructor('E')
+          setup[i][j] = new CellConstructor('E');
         } else if (setup[i][j] == 'A') {
-          var randomizeObstacle = Math.random();
-          var obstacle = randomizeObstacle < 0.75 ? 'W' : 'E';
           var randomizeItem = Math.random();
           var availableItems = Object.keys(items); // ['addBomb', 'addBlast']
           var itemName = availableItems[Math.floor((Math.random() * availableItems.length))];
-          var item = obstacle && randomizeItem < 0.2 ? itemName : null;
-          setup[i][j] = new CellConstructor(obstacle, item);
+          var item = 'W' && randomizeItem < 0.2 ? itemName : null;
+          setup[i][j] = new CellConstructor('W', item);
         }
       }
     }
-    console.log(setup)
   }
 
   var populateHTML = function () {
@@ -240,9 +242,6 @@ $(document).ready(function() {
         if (setup[i][j].obstacle == 'W') {
           $('tr').eq(i).find('td').eq(j).addClass('wood');
         }
-        // if (setup[i][j].item == 'speed') {
-        //   $('tr').eq(i).find('td').eq(j).addClass('speed');
-        // }
       }
     }
   }
