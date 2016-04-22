@@ -226,12 +226,12 @@ $(document).ready(function() {
           setup[i][j] = new CellConstructor('E');
         } else if (setup[i][j] == 'A') {
           var randomizeObstacle = Math.random();
-          // var obstacle = randomizeObstacle < 0.75 ? 'W' : 'E';
+          var obstacle = randomizeObstacle < 0.75 ? 'W' : 'E';
           var randomizeItem = Math.random();
           var availableItems = Object.keys(items); // ['addBomb', 'addBlast']
           var itemName = availableItems[Math.floor((Math.random() * availableItems.length))];
           var item = 'W' && randomizeItem < 0.2 ? itemName : null;
-          setup[i][j] = new CellConstructor('W', item);
+          setup[i][j] = new CellConstructor(obstacle, item);
         }
       }
     }
@@ -242,7 +242,9 @@ $(document).ready(function() {
     for (var i = 0; i < setup.length; i++) {
       for (var j = 0; j < setup[i].length; j++) {
         if (setup[i][j].obstacle == 'W') {
-          $('tr').eq(i).find('td').eq(j).addClass('wood');
+          $('tr').eq(i).find('td').eq(j).removeClass('addBomb addBlast wood').addClass('wood');
+        } else if (setup[i][j].obstacle == 'E') {
+          $('tr').eq(i).find('td').eq(j).removeClass('addBomb addBlast wood');
         }
       }
     }
@@ -527,7 +529,7 @@ $(document).ready(function() {
     setup = (new Setup).map;
     world();
     populateHTML();
-    createPlayer()
+    createPlayer();
     if (gameLoopInterval) { clearInterval(gameLoopInterval) }
     gameLoopInterval = setInterval(gameLoop, 10);
   };
@@ -536,7 +538,7 @@ $(document).ready(function() {
     setup = (new Setup).map;
     world();
     populateHTML();
-    createPlayer()
+    createPlayer();
     bindKeyDown();
     bindKeyUp();
     bindReplay();
